@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://raw.githubusercontent.com/onebuckapp/nimbox.app/main/.github/logo.png" alt="Nimbox by OneBuckApp" width="128px" height="128px"><br>
+  <img src="https://github.com/onebuckapp/nimbox/blob/main/.github/nimbox_logo.png" alt="Nimbox by OneBuckApp" width="128px" height="128px"><br>
   This is Nimbox &mdash; A graphical user interface for Nimble<br>
   Manage packages, build documentation, and chat with AI assistant about Nim
 </p>
