@@ -1,7 +1,7 @@
 <p align="center">
   <img src="https://github.com/onebuckapp/nimbox.app/blob/main/.github/nimbox_logo.png" alt="Nimbox by OneBuckApp" width="128px" height="128px"><br>
   This is Nimbox &mdash; A graphical user interface for Nimble<br>
-  Manage packages, build documentation, and chat with AI assistant about Nim
+  Manage packages &bullet; Build local docs &bullet; Chat with AI assistants Nim stuff, and more!<br>
 </p>
 
 
