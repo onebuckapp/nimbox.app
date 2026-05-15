@@ -9,7 +9,7 @@ import 'package:shadcn_flutter/shadcn_flutter.dart';
 Future<void> showSyncingDialog(BuildContext context, Stream<String> syncStream) async {
   await showDialog(
     context: context,
-    // barrierDismissible: false,
+    barrierDismissible: false,
     builder: (context) {
       return StreamBuilder<String>(
         stream: syncStream,
