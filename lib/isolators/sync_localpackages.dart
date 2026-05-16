@@ -60,7 +60,7 @@ class SyncLocalPackages {
           orElse: () => '',
         );
     if (urlLine.isEmpty) return '';
-    return urlLine.split(':').last.trim();
+    return urlLine.split(':').last.trim().replaceAll(RegExp(r'\s*\(\w+\)$'), '');
   }
 
   static Future<void> _localPackagesIsolateEntry(List<dynamic> args) async {

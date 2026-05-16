@@ -9,15 +9,7 @@ import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import './spotlight.dart';
-
-Future<void> openUrl(String url) async {
-  final uri = Uri.parse(url);
-  if (await canLaunchUrl(uri)) {
-    await launchUrl(uri, mode: LaunchMode.externalApplication);
-  } else {
-    throw 'Could not launch $url';
-  }
-}
+import '../../utils/util.dart';
 
 Widget renderNavigationBarWithShadow(BuildContext context) {
   return Container(
@@ -52,7 +44,7 @@ class _HoverableChatboxState extends State<HoverableChatbox> {
       duration: const Duration(milliseconds: 200),
       curve: Curves.easeInOut,
       top: _topPosition,
-      right: 100,
+      right: 10,
       child: MouseRegion(
         cursor: SystemMouseCursors.click,
         onEnter: (_) {
@@ -63,7 +55,7 @@ class _HoverableChatboxState extends State<HoverableChatbox> {
         },
         onExit: (_) {
           setState(() {
-            _topPosition = -5;
+            _topPosition = -2;
             _tiltAngle = 0;
           });
         },
@@ -76,7 +68,7 @@ class _HoverableChatboxState extends State<HoverableChatbox> {
               turns: _tiltAngle / (2 * 3.1415926535), // Convert radians to turns
               duration: const Duration(milliseconds: 50),
               child: Image.asset(
-                'assets/chatbox-1.png',
+                'assets/chatbox-2.png',
                 width: 125,
                 height: 125,
                 fit: BoxFit.contain,
@@ -94,10 +86,10 @@ Widget renderNavigationMenu(BuildContext context) {
     width: MediaQuery.of(context).size.width - 50,
     height: 46,
     child: Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      mainAxisAlignment: MainAxisAlignment.start,
       children: [
         SizedBox(
-          width: 400,
+          width: 650,
           child: NavigationMenu(
             children: [
               NavigationMenuItem(
@@ -112,14 +104,28 @@ Widget renderNavigationMenu(BuildContext context) {
                 onPressed: () => GoRouter.of(context).go('/packages'),
                 child: const Text("Installed Packages"),
               ),
+              NavigationMenuItem(
+                onPressed: () => GoRouter.of(context).go('/docs'),
+                child: const Text('Documentations'),
+              ),
+              NavigationMenuItem(
+                onPressed: () => openUrl('https://forum.nim-lang.org?utm_source=nimbox&utm_medium=app&utm_campaign=navigation'),
+                child: Row(
+                  children: [
+                    const Text('Forum'),
+                    const SizedBox(width: 4),
+                    Icon(LucideIcons.externalLink, size: 12, color: Colors.slate),
+                  ],
+                )
+              ),
             ],
           ),
         ),
-        GestureDetector(
-          onTap: () => showSearchPanel(context),
-          child: SizedBox(
-            height: 36,
-            width: 430,
+        SizedBox(
+          height: 36,
+          width: 320,
+          child: GestureDetector(
+            onTap: () => showSearchPanel(context),
             child: AbsorbPointer(
               child: const TextField(
                 padding: EdgeInsets.symmetric(horizontal: 12, vertical: 0),
@@ -127,27 +133,7 @@ Widget renderNavigationMenu(BuildContext context) {
               ),
             ),
           ),
-        ),
-        SizedBox(
-          width: 500, // Ensure enough space for the Stack
-          child: Stack(
-            clipBehavior: Clip.none, // Allow overflow
-            children: [
-              NavigationMenu(
-                children: [
-                  NavigationMenuItem(
-                    onPressed: () => GoRouter.of(context).go('/docs'),
-                    child: const Text('Documentations'),
-                  ),
-                  NavigationMenuItem(
-                    onPressed: () => openUrl('https://forum.nim-lang.org?utm_source=nimbox&utm_medium=app&utm_campaign=navigation'),
-                    child: const Text('Community'),
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ),
+        )
       ]
     )
   );

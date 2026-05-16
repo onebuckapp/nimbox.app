@@ -15,17 +15,12 @@ import '../isolators/sync_localpackages.dart';
 import '../database/db_helper.dart';
 import '../dialogs/syncing_dialog.dart';
 import '../services/notification_service.dart';
-import '../utils/util.dart';
 
 import './partials/navigation.dart';
-import './partials/feedcard_updates.dart';
-import './partials/feedcard_forum.dart';
-
 import './widgets/package_card.dart';
-import './widgets/panel.dart';
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({
+class PackagesPage extends StatefulWidget {
+  const PackagesPage({
     super.key,
     required this.title,
     required this.isDark,
@@ -35,12 +30,11 @@ class MyHomePage extends StatefulWidget {
   final bool isDark;
 
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  State<PackagesPage> createState() => _PackagesPageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
+class _PackagesPageState extends State<PackagesPage> with WidgetsBindingObserver {
   late SyncLocalPackages _syncLocalPackages;
-
   List<Map<String, dynamic>> _packages = [];
   bool _isSyncing = false;
 
@@ -68,7 +62,7 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
 
   Future<void> _loadPackages() async {
     final dbHelper = DBHelper();
-    final packages = await dbHelper.getSomePackages(10);
+    final packages = await dbHelper.getPackages();
     setState(() {
       _packages = packages;
     });
@@ -114,62 +108,34 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
       child: Stack(
         children: [
           Padding(
-            padding: const EdgeInsets.only(top: 80, left: 20, right: 20, bottom: 0),
-            child: SingleChildScrollView( // Wrap the entire content in a SingleChildScrollView
-              controller: _verticalScrollController,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  SizedBox(height: 20),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.max,
-                    children: [
-                      SizedBox(
-                        height: 300,
-                        child: FeedCardUpdates(),
-                      ),
-                      const SizedBox(width: 16),
-                      SizedBox(
-                        height: 300,
-                        child: FeedCardForum(),
-                      ),
-                      const SizedBox(width: 16)
-                    ],
-                  ),
-                  const SizedBox(height: 20), // Add spacing between sections
-                  _packages.isEmpty
-                      ? const Center(child: Text("Loading packages..."))
-                      : LayoutBuilder(
-                          builder: (context, constraints) {
-                            final contentWidth = constraints.maxWidth < _minContentWidth
-                                ? _minContentWidth
-                                : constraints.maxWidth;
-                            return Scrollbar(
+            padding: const EdgeInsets.only(top: 10, left: 20, right: 20, bottom: 0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  child: _packages.isEmpty
+                    ? const Center(child: Text("Loading packages..."))
+                    : LayoutBuilder(
+                        builder: (context, constraints) {
+                          final contentWidth = constraints.maxWidth < _minContentWidth
+                              ? _minContentWidth
+                              : constraints.maxWidth;
+                          return Scrollbar(
+                            controller: _horizontalScrollController,
+                            thumbVisibility: constraints.maxWidth < _minContentWidth,
+                            child: SingleChildScrollView(
                               controller: _horizontalScrollController,
-                              thumbVisibility: constraints.maxWidth < _minContentWidth,
-                              child: SingleChildScrollView(
-                                controller: _horizontalScrollController,
-                                scrollDirection: Axis.horizontal,
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Row(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Text('Your local packages').medium.h3,
-                                        const SizedBox(width: 24),
-                                        OutlineButton(
-                                          child: const Text('See all packages'),
-                                          onPressed: () {
-                                            GoRouter.of(context).go('/packages');
-                                          },
-                                        )
-                                      ],
-                                    ),
-                                    const SizedBox(height: 14),
-                                    SizedBox(
-                                      width: contentWidth,
+                              scrollDirection: Axis.horizontal,
+                              child: SizedBox(
+                                width: contentWidth,
+                                child: Scrollbar(
+                                  controller: _verticalScrollController,
+                                  thumbVisibility: true,
+                                  child: SingleChildScrollView(
+                                    controller: _verticalScrollController,
+                                    child: Container(
+                                      padding: const EdgeInsets.only(top: 20, bottom: 20),
+                                      margin: const EdgeInsets.only(top: 80),
                                       child: Wrap(
                                         spacing: 14,
                                         runSpacing: 14,
@@ -186,14 +152,15 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
                                         }).toList(),
                                       ),
                                     ),
-                                  ],
-                                )
+                                  ),
+                                ),
                               ),
-                            );
-                          },
-                        ),
-                ],
-              ),
+                            ),
+                          );
+                        },
+                      ),
+                ),
+              ],
             ),
           ),
           renderNavigationBarWithShadow(context),

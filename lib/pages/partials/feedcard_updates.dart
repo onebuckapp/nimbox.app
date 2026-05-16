@@ -1,0 +1,160 @@
+// Nimbox - The missing GUI for Nimble, Nim's package manager.
+//      Copyright (c) 2026 George Lemon
+//      Released under the GPLv3 License
+//      https://onebuck.app | https://github.com/onebuckapp
+
+import 'package:xml/xml.dart';
+import 'package:flutter/animation.dart';
+import 'package:shadcn_flutter/shadcn_flutter.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+
+import './feedcard_service.dart';
+import '../../utils/util.dart';
+
+class FeedCardUpdates extends FeedCardBase {
+  const FeedCardUpdates({Key? key})
+      : super(key: key, url: 'https://github.com/nim-lang/Nim/releases.atom');
+
+  @override
+  State<FeedCardUpdates> createState() => _FeedCardUpdatesState();
+}
+
+class _FeedCardUpdatesState extends FeedCardBaseState<FeedCardUpdates> with SingleTickerProviderStateMixin {
+  String? _version;
+  String? _description;
+  String? _releaseLink;
+
+  late final AnimationController _rotationController;
+
+  @override
+  void initState() {
+    super.initState();
+    _rotationController = AnimationController(
+      vsync: this, // Now works because of SingleTickerProviderStateMixin
+      duration: const Duration(seconds: 30), // Adjust duration for rotation speed
+    )..repeat(); // Infinite rotation
+  }
+
+  @override
+  void dispose() {
+    _rotationController.dispose();
+    super.dispose();
+  }
+
+  @override
+  void onXmlFetched(String xml) {
+    final document = XmlDocument.parse(xml);
+    final entry = document.findAllElements('entry').first;
+    final rawDescription = entry.findElements('content').first.text;
+
+    setState(() {
+      _version = entry.findElements('title').first.text;
+      _description = rawDescription.replaceAll(RegExp(r'<[^>]*>'), '');
+      _releaseLink = entry.findElements('link').first.getAttribute('href');
+      isLoading = false;
+    });
+  }
+
+  @override
+  Widget buildPlaceholder() => _innerContainer(
+        version: 'Loading...',
+        description: 'Fetching update details...',
+        isLoading: true,
+      ).asSkeleton();
+
+  @override
+  Widget buildContent() => _innerContainer(
+        version: _version ?? 'Unknown Version',
+        description: _description ?? 'No description available.',
+      );
+
+  Widget _innerContainer({required String version, required String description, bool isLoading = false}) {
+    return GestureDetector(
+      onTap: () {
+        if (_releaseLink != null) {
+          openUrl(_releaseLink!);
+        }
+      },
+      child: MouseRegion(
+        cursor: SystemMouseCursors.click,
+        child: Card(
+          padding: const EdgeInsets.all(0),
+          borderRadius: BorderRadius.circular(15),
+          clipBehavior: Clip.antiAlias,
+          child: Container(
+            width: 280,
+            decoration: const BoxDecoration(
+              image: null, // Remove static image decoration
+            ),
+            child: Stack(
+              children: [
+                // Rotating background image
+                Positioned.fill(
+                  child: ClipRect(
+                    child: OverflowBox(
+                      maxWidth: double.infinity,
+                      maxHeight: double.infinity,
+                      child: RotationTransition(
+                        turns: _rotationController,
+                        child: Transform.scale(
+                          scale: 2.5, // Scale up enough to cover corners during rotation
+                          child: Container(
+                            decoration: const BoxDecoration(
+                              image: DecorationImage(
+                                image: AssetImage('assets/kunal-patil-8ZKlgI_G-mw-unsplash.jpg'),
+                                fit: BoxFit.cover,
+                                // alignment: Alignment(-0.5, -0.5)
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                // Static content on top of the rotating background
+                Container(
+                  padding: const EdgeInsets.only(left: 24, right: 16, top: 16, bottom: 24),
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.bottomCenter,
+                      end: Alignment.topCenter,
+                      colors: [Colors.black.withOpacity(0.7), Colors.transparent],
+                    ),
+                  ),
+                  child: Column(
+                    children:[
+                      Align(
+                        alignment: Alignment.topRight,
+                        child: SvgPicture.asset(
+                          'assets/nim-icon.svg',
+                          width: 32,
+                          height: 32,
+                        ),
+                      ),
+                      const Spacer(),
+                      Align(
+                        alignment: Alignment.bottomLeft,
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            SecondaryBadge(child: Text(version).semiBold.small),
+                            const SizedBox(height: 8),
+                            Text("Update Available", style: TextStyle(fontSize: 32)).light,
+                            const SizedBox(height: 8),
+                            Text(description).small,
+                          ],
+                        ),
+                      ),
+                    ]
+                  )
+                ),
+              ],
+            ),
+          ),
+        )
+      )
+    );
+  }
+}

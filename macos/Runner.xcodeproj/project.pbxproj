@@ -27,6 +27,8 @@
 		33CC10F32044A3C60003C045 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 33CC10F22044A3C60003C045 /* Assets.xcassets */; };
 		33CC10F62044A3C60003C045 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 33CC10F42044A3C60003C045 /* MainMenu.xib */; };
 		33CC11132044BFA00003C045 /* MainFlutterWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33CC11122044BFA00003C045 /* MainFlutterWindow.swift */; };
+		45148A402FB907C200762E11 /* Classes in Resources */ = {isa = PBXBuildFile; fileRef = 45148A3F2FB907C200762E11 /* Classes */; };
+		45148A432FB9095400762E11 /* MacOSWebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45148A422FB9095400762E11 /* MacOSWebView.swift */; };
 		4A7209A68245A6FA8734F3EF /* Pods_Runner.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 69ED2E8D327EB0C6625FC0EA /* Pods_Runner.framework */; };
 		964FE8D85E0575EF44F08495 /* Pods_RunnerTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 88BA1B9ACF4C7DED57EAFE75 /* Pods_RunnerTests.framework */; };
 /* End PBXBuildFile section */
@@ -80,6 +82,9 @@
 		33E51913231747F40026EE4D /* DebugProfile.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = DebugProfile.entitlements; sourceTree = "<group>"; };
 		33E51914231749380026EE4D /* Release.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; path = Release.entitlements; sourceTree = "<group>"; };
 		33E5194F232828860026EE4D /* AppInfo.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = AppInfo.xcconfig; sourceTree = "<group>"; };
+		45148A3E2FB9078200762E11 /* MacOSWebView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = MacOSWebView.swift; path = Runner/Classes/MacOSWebView.swift; sourceTree = "<group>"; };
+		45148A3F2FB907C200762E11 /* Classes */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Classes; sourceTree = "<group>"; };
+		45148A422FB9095400762E11 /* MacOSWebView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacOSWebView.swift; sourceTree = "<group>"; };
 		69ED2E8D327EB0C6625FC0EA /* Pods_Runner.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Runner.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		7AFA3C8E1D35360C0083082E /* Release.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Release.xcconfig; sourceTree = "<group>"; };
 		88BA1B9ACF4C7DED57EAFE75 /* Pods_RunnerTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_RunnerTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -132,6 +137,8 @@
 		33CC10E42044A3C60003C045 = {
 			isa = PBXGroup;
 			children = (
+				45148A422FB9095400762E11 /* MacOSWebView.swift */,
+				45148A3F2FB907C200762E11 /* Classes */,
 				33FAB671232836740065AC1E /* Runner */,
 				33CEB47122A05771004F2AC0 /* Flutter */,
 				331C80D6294CF71000263BE5 /* RunnerTests */,
@@ -195,13 +202,13 @@
 				07E1A9838B5DAA876653314D /* Pods-RunnerTests.release.xcconfig */,
 				9386534155E4DCC4DA1455C3 /* Pods-RunnerTests.profile.xcconfig */,
 			);
-			name = Pods;
 			path = Pods;
 			sourceTree = "<group>";
 		};
 		D73912EC22F37F3D000D13A0 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				45148A3E2FB9078200762E11 /* MacOSWebView.swift */,
 				69ED2E8D327EB0C6625FC0EA /* Pods_Runner.framework */,
 				88BA1B9ACF4C7DED57EAFE75 /* Pods_RunnerTests.framework */,
 			);
@@ -315,6 +322,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				45148A402FB907C200762E11 /* Classes in Resources */,
 				33CC10F32044A3C60003C045 /* Assets.xcassets in Resources */,
 				33CC10F62044A3C60003C045 /* MainMenu.xib in Resources */,
 			);
@@ -437,6 +445,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				45148A432FB9095400762E11 /* MacOSWebView.swift in Sources */,
 				33CC11132044BFA00003C045 /* MainFlutterWindow.swift in Sources */,
 				33CC10F12044A3C60003C045 /* AppDelegate.swift in Sources */,
 				335BBD1B22A9A15E00E9071D /* GeneratedPluginRegistrant.swift in Sources */,

@@ -4,13 +4,12 @@
   Manage packages &bullet; Build local docs &bullet; Chat with AI assistants Nim stuff, and more!<br>
 </p>
 
-
 ## Key Features (and to-dos)
-- Works with Nimble | Manage packages and dependencies
-- Browse for online packages
-- Built-in conversational Chatbot (supporting Ollama, OpenAI, Gemini, and more)
-- Documentation Enciclopedia (Generate package docs for embeddings)
-- Get Nim news and updates via RSS feeds
+- [ ] Works with Nimble | Manage packages and dependencies
+- [ ] Browse for online packages
+- [ ] Built-in conversational Chatbot (supporting Ollama, OpenAI, Gemini, and more)
+- [ ] Documentation Encyclopedia | Build, Search and Browse docs locally
+- [ ] Get Nim news and updates via RSS feeds
 
 ### ❤ Contributions & Support
 - 🐛 Found a bug? [Create a new Issue](https://github.com/onebuckapp/nimbox.app/issues)

@@ -3,6 +3,7 @@
 //      Released under the GPLv3 License
 //      https://onebuck.app | https://github.com/onebuckapp
 
+import 'dart:async';
 import 'package:flutter/services.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:flutter_tabler_icons/flutter_tabler_icons.dart';
@@ -27,11 +28,14 @@ class _SearchPanel extends StatefulWidget {
 class _SearchPanelState extends State<_SearchPanel> {
   final TextEditingController _controller = TextEditingController();
   final FocusNode _focusNode = FocusNode();
+  final ScrollController _scrollController = ScrollController();
 
   List<Map<String, dynamic>> _results = [];
   List<Map<String, dynamic>> _allPackages = [];
   int _selectedIndex = -1;
   bool _loading = true;
+  bool _isKeyboardNavigating = false;
+  Timer? _mouseEnableTimer;
 
   @override
   void initState() {
@@ -82,13 +86,19 @@ class _SearchPanelState extends State<_SearchPanel> {
     if (event is KeyDownEvent) {
       if (event.logicalKey == LogicalKeyboardKey.arrowDown) {
         setState(() {
+          _isKeyboardNavigating = true;
           _selectedIndex = (_selectedIndex + 1).clamp(0, _results.length - 1);
         });
+        _disableMouseTemporarily(); // Disable mouse gestures temporarily
+        _scrollToSelectedIndex();
         return KeyEventResult.handled;
       } else if (event.logicalKey == LogicalKeyboardKey.arrowUp) {
         setState(() {
+          _isKeyboardNavigating = true;
           _selectedIndex = (_selectedIndex - 1).clamp(0, _results.length - 1);
         });
+        _disableMouseTemporarily(); // Disable mouse gestures temporarily
+        _scrollToSelectedIndex();
         return KeyEventResult.handled;
       } else if (event.logicalKey == LogicalKeyboardKey.enter && _selectedIndex >= 0) {
         _selectPackage(_results[_selectedIndex]['name']);
@@ -101,11 +111,35 @@ class _SearchPanelState extends State<_SearchPanel> {
     return KeyEventResult.ignored;
   }
 
+  void _scrollToSelectedIndex() {
+    if (_scrollController.hasClients && _selectedIndex >= 0) {
+      _scrollController.animateTo(
+        _selectedIndex * 50.0, // Assuming each item has a height of ~50px
+        duration: const Duration(milliseconds: 200),
+        curve: Curves.easeInOut,
+      );
+    }
+  }
+
   @override
   void dispose() {
     _controller.dispose();
     _focusNode.dispose();
+    _scrollController.dispose();
+    _mouseEnableTimer?.cancel(); // Cancel the timer if active
     super.dispose();
+  }
+
+  void _disableMouseTemporarily() {
+    // Cancel any existing timer
+    _mouseEnableTimer?.cancel();
+
+    // Disable mouse gestures and set a timeout to re-enable them
+    _mouseEnableTimer = Timer(const Duration(milliseconds: 300), () {
+      setState(() {
+        _isKeyboardNavigating = false;
+      });
+    });
   }
 
   @override
@@ -127,8 +161,6 @@ class _SearchPanelState extends State<_SearchPanel> {
                   padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                   child: Row(
                     children: [
-                      Icon(TablerIcons.search, size: 20, color: Colors.white.withOpacity(0.4)),
-                      const SizedBox(width: 12),
                       Expanded(
                         child: TextField(
                           controller: _controller,
@@ -144,7 +176,6 @@ class _SearchPanelState extends State<_SearchPanel> {
                     ],
                   ),
                 ),
-                Divider(color: Colors.white.withOpacity(0.08)),
                 // Results section with fixed height
                 if (_loading)
                   const Padding(
@@ -169,6 +200,7 @@ class _SearchPanelState extends State<_SearchPanel> {
                             ),
                           )
                         : ListView.builder(
+                            controller: _scrollController,
                             padding: const EdgeInsets.symmetric(vertical: 6),
                             shrinkWrap: true,
                             itemCount: _results.length,
@@ -178,7 +210,14 @@ class _SearchPanelState extends State<_SearchPanel> {
                               return GestureDetector(
                                 onTap: () => _selectPackage(pkg['name']),
                                 child: MouseRegion(
-                                  onEnter: (_) => setState(() => _selectedIndex = index),
+                                  onEnter: (_) {
+                                    if (_isKeyboardNavigating) return; // Ignore mouse gestures during keyboard navigation
+                                    setState(() => _selectedIndex = index);
+                                  },
+                                  onHover: (_) {
+                                    if (_isKeyboardNavigating) return; // Ignore mouse gestures during keyboard navigation
+                                    setState(() => _selectedIndex = index);
+                                  },
                                   child: AnimatedContainer(
                                     duration: const Duration(milliseconds: 80),
                                     margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
@@ -254,19 +293,19 @@ class _SearchPanelState extends State<_SearchPanel> {
                     padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                     child: Row(
                       children: [
-                        Icon(TablerIcons.arrow_up, size: 12, color: Colors.white.withOpacity(0.2)),
-                        Icon(TablerIcons.arrow_down, size: 12, color: Colors.white.withOpacity(0.2)),
+                        Icon(TablerIcons.arrow_up, size: 13, color: Colors.white.withOpacity(0.2)),
+                        Icon(TablerIcons.arrow_down, size: 13, color: Colors.white.withOpacity(0.2)),
                         const SizedBox(width: 4),
                         Text(
                           'to navigate',
-                          style: TextStyle(fontSize: 11, color: Colors.white.withOpacity(0.2)),
+                          style: TextStyle(fontSize: 13, color: Colors.white.withOpacity(0.2)),
                         ),
-                        const SizedBox(width: 12),
-                        Icon(TablerIcons.corner_down_left, size: 12, color: Colors.white.withOpacity(0.2)),
+                        const SizedBox(width: 13),
+                        Icon(TablerIcons.corner_down_left, size: 13, color: Colors.white.withOpacity(0.2)),
                         const SizedBox(width: 4),
                         Text(
                           'to open',
-                          style: TextStyle(fontSize: 11, color: Colors.white.withOpacity(0.2)),
+                          style: TextStyle(fontSize: 13, color: Colors.white.withOpacity(0.2)),
                         ),
                       ],
                     ),

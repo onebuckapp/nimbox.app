@@ -6,6 +6,7 @@
 import Cocoa
 import FlutterMacOS
 import UserNotifications
+import WebKit
 
 @main
 class AppDelegate: FlutterAppDelegate, UNUserNotificationCenterDelegate { // Conform to the protocol
@@ -16,6 +17,13 @@ class AppDelegate: FlutterAppDelegate, UNUserNotificationCenterDelegate { // Con
       }
     }
     UNUserNotificationCenter.current().delegate = self // Now valid
+
+    let controller = mainFlutterWindow?.contentViewController as! FlutterViewController
+    // Register platform view factory
+    let registrar = controller.registrar(forPlugin: "MacOSWebViewPlugin")
+    let factory = MacOSWebViewFactory(messenger: registrar.messenger)
+    registrar.register(factory, withId: "macos_webview")
+    RegisterGeneratedPlugins(registry: controller)
   }
 
   override func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool {

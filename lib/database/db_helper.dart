@@ -43,6 +43,8 @@ class DBHelper {
               author TEXT,
               license TEXT,
               nimble_path TEXT,
+              tags TEXT, -- JSON-encoded array of tags
+              url TEXT, -- URL of the package
               UNIQUE(name, version)
             )
           ''');
@@ -66,6 +68,11 @@ class DBHelper {
   Future<List<Map<String, dynamic>>> getPackages() async {
     final db = await database;
     return await db.query('packages');
+  }
+
+  Future<List<Map<String, dynamic>>> getSomePackages(int limit) async {
+    final db = await database;
+    return await db.query('packages', limit: limit);
   }
 
   Future<List<Map<String, dynamic>>> searchPackages(String query) async {
