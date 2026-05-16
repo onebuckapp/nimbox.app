@@ -43,6 +43,26 @@ class SyncLocalPackages {
       }
     });
   }
+
+  static List<String> _parseTags(String searchOutput) {
+    final tagLine = searchOutput.split('\n').firstWhere(
+          (line) => line.trim().startsWith('tags:'),
+          orElse: () => '',
+        );
+    if (tagLine.isEmpty) return [];
+    final tags = tagLine.split(':').last.trim();
+    return tags.split(',').map((tag) => tag.trim()).toList();
+  }
+
+  static String _parseUrl(String searchOutput) {
+    final urlLine = searchOutput.split('\n').firstWhere(
+          (line) => line.trim().startsWith('url:'),
+          orElse: () => '',
+        );
+    if (urlLine.isEmpty) return '';
+    return urlLine.split(':').last.trim();
+  }
+
   static Future<void> _localPackagesIsolateEntry(List<dynamic> args) async {
     final sendPort = args[0] as SendPort;
     final dbPath = args[1] as String;
@@ -50,7 +70,6 @@ class SyncLocalPackages {
     sqfliteFfiInit();
     databaseFactory = databaseFactoryFfi;
 
-    // Open a fresh database connection inside the isolate
     final db = await databaseFactoryFfi.openDatabase(
       dbPath,
       options: OpenDatabaseOptions(
@@ -65,6 +84,8 @@ class SyncLocalPackages {
               author TEXT,
               license TEXT,
               nimble_path TEXT,
+              tags TEXT, -- JSON-encoded array of tags
+              url TEXT, -- URL of the package
               UNIQUE(name, version)
             )
           ''');
@@ -73,8 +94,6 @@ class SyncLocalPackages {
     );
 
     try {
-      // await db.delete('packages');
-
       final result = await Process.run('nimble', ['list', '--installed']);
       if (result.exitCode != 0) {
         sendPort.send({'error': 'nimble list failed: ${result.stderr}'});
@@ -87,7 +106,6 @@ class SyncLocalPackages {
           .where((name) => name.isNotEmpty)
           .toList();
 
-      // Run all nimble dump commands concurrently
       const concurrencyLimit = 10;
       final packages = <Map<String, dynamic>>[];
 
@@ -96,8 +114,18 @@ class SyncLocalPackages {
         final chunkFutures = chunk.map((pkgName) async {
           final dumpResult = await Process.run('nimble', ['dump', pkgName, '--json']);
           if (dumpResult.exitCode != 0) return null;
+
           try {
             final dumpData = jsonDecode(dumpResult.stdout as String) as Map<String, dynamic>;
+
+            // Run `nimble search` to get tags and url
+            final searchResult = await Process.run('nimble', ['search', pkgName]);
+            if (searchResult.exitCode != 0) return null;
+
+            final searchOutput = searchResult.stdout as String;
+            final tags = _parseTags(searchOutput);
+            final url = _parseUrl(searchOutput);
+
             sendPort.send({'pkg': pkgName});
             return {
               'name': dumpData['name'] ?? pkgName,
@@ -106,6 +134,8 @@ class SyncLocalPackages {
               'author': dumpData['author'] ?? '',
               'license': dumpData['license'] ?? '',
               'nimble_path': dumpData['nimblePath'] ?? '',
+              'tags': jsonEncode(tags), // Store tags as JSON-encoded string
+              'url': url,
             };
           } catch (e) {
             print('Failed to parse $pkgName: $e');
@@ -127,11 +157,11 @@ class SyncLocalPackages {
       });
 
       sendPort.send({'status': 'done'});
-      
     } catch (e) {
       sendPort.send({'error': e.toString()});
     } finally {
       await db.close();
     }
   }
+
 }

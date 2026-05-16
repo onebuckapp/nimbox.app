@@ -68,6 +68,16 @@ class DBHelper {
     return await db.query('packages');
   }
 
+  Future<List<Map<String, dynamic>>> searchPackages(String query) async {
+    final db = await database;
+    final results = await db.query(
+      'packages',
+      where: 'name LIKE ? OR tags LIKE ?',
+      whereArgs: ['%$query%', '%$query%'],
+    );
+    return results;
+  }
+
   Future<void> clearPackages() async {
     final db = await database;
     await db.delete('packages');

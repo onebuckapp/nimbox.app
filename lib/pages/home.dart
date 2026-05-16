@@ -36,9 +36,18 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
   List<Map<String, dynamic>> _packages = [];
   bool _isSyncing = false;
 
+
+  late ScrollController _horizontalScrollController;
+  late ScrollController _verticalScrollController;
+
+  // 4 cards * width + 3 gaps + horizontal padding
+  static const double _minContentWidth = 4 * 255.0 + 3 * 14.0 + 40.0;
+
   @override
   void initState() {
     super.initState();
+    _horizontalScrollController = ScrollController();
+    _verticalScrollController = ScrollController();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       final dbPath = await DBHelper.getDatabasePath();
       if (!File(dbPath).existsSync()) {
@@ -83,6 +92,13 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
         _isSyncing = false;
       });
     }
+  }
+
+  @override
+  void dispose() {
+    _horizontalScrollController.dispose();
+    _verticalScrollController.dispose();
+    super.dispose();
   }
 
   Widget renderPackageCard({
@@ -164,199 +180,85 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
   }
 
   Widget build(BuildContext context) {
-    return PlatformMenuBar(
-      menus: [
-        PlatformMenu(
-          label: 'Custom',
-          menus: [
-            // Add the default About menu item
-            const PlatformProvidedMenuItem(
-              type: PlatformProvidedMenuItemType.about,
-            ),
-            PlatformMenuItem(
-              label: 'New Document',
-              onSelected: () {
-                debugPrint('New Document selected');
-                // Your logic here
-              },
-              shortcut: const SingleActivator(
-                LogicalKeyboardKey.keyN,
-                meta: true,
-                shift: true,
-              ),
-            ),
-            PlatformMenuItem(
-              label: 'Preferences...',
-              onSelected: () {
-                debugPrint('Preferences selected');
-                // Your logic here
-              },
-              shortcut: const SingleActivator(
-                LogicalKeyboardKey.comma,
-                meta: true,
-              ),
-            ),
-            const PlatformMenuItemGroup(
-              members: [
-                PlatformMenuItem(
-                  label: 'Tool 1',
-                  shortcut: SingleActivator(
-                    LogicalKeyboardKey.digit1,
-                    meta: true,
-                    alt: true,
-                  ),
-                ),
-                PlatformMenuItem(
-                  label: 'Tool 2',
-                  shortcut: SingleActivator(
-                    LogicalKeyboardKey.digit2,
-                    meta: true,
-                    alt: true,
-                  ),
+    return Scaffold(
+      child: Stack(
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(top: 10, left: 20, right: 20, bottom: 0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  child: _packages.isEmpty
+                    ? const Center(child: Text("Loading packages..."))
+                    : LayoutBuilder(
+                        builder: (context, constraints) {
+                          final contentWidth = constraints.maxWidth < _minContentWidth
+                              ? _minContentWidth
+                              : constraints.maxWidth;
+                          return Scrollbar(
+                            controller: _horizontalScrollController,
+                            thumbVisibility: constraints.maxWidth < _minContentWidth,
+                            child: SingleChildScrollView(
+                              controller: _horizontalScrollController,
+                              scrollDirection: Axis.horizontal,
+                              child: SizedBox(
+                                width: contentWidth,
+                                child: Scrollbar(
+                                  controller: _verticalScrollController,
+                                  thumbVisibility: true,
+                                  child: SingleChildScrollView(
+                                    controller: _verticalScrollController,
+                                    child: Container(
+                                      padding: const EdgeInsets.only(top: 20, bottom: 20),
+                                      margin: const EdgeInsets.only(top: 80),
+                                      child: Wrap(
+                                        spacing: 14,
+                                        runSpacing: 14,
+                                        children: _packages.map((package) {
+                                          return renderPackageCard(
+                                            title: package['name'] ?? 'Unknown Package',
+                                            desc: package['description'] ?? 'No description available.',
+                                            author: package['author'] ?? 'Unknown Author',
+                                            version: package['version'] ?? 'N/A',
+                                            license: package['license'] ?? 'Unknown',
+                                            contextMenuItems: [
+                                              MenuButton(
+                                                child: const Text('View Details'),
+                                                onPressed: (context) {
+                                                  GoRouter.of(context).go('/packages/${package['name']}');
+                                                },
+                                              ),
+                                              MenuButton(
+                                                child: const Text('Delete'),
+                                                onPressed: (context) async {
+                                                  final dbHelper = DBHelper();
+                                                  await dbHelper.clearPackages();
+                                                  _loadPackages();
+                                                },
+                                              ),
+                                            ],
+                                            width: 255,
+                                            height: 130,
+                                          );
+                                        }).toList(),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          );
+                        },
+                      ),
                 ),
               ],
             ),
-          ],
-        ),
-      ],
-      // child: Scaffold(
-      //   child: Stack(
-      //     children: [
-      //       Padding(
-      //         padding: const EdgeInsets.only(top: 10, left: 5, right: 5, bottom: 0),
-      //         child: SingleChildScrollView(
-      //           child: Padding(
-      //             padding: const EdgeInsets.only(top: 130, left: 20, right: 20),
-      //             child: Column(
-      //               crossAxisAlignment: CrossAxisAlignment.start,
-      //               children: [
-      //                 Row(
-      //                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      //                   mainAxisSize: MainAxisSize.max,
-      //                   children: [
-      //                     SizedBox(
-      //                       height: 280,
-      //                       child: Card(
-      //                         padding: const EdgeInsets.all(0),
-      //                         borderRadius: BorderRadius.circular(15),
-      //                         clipBehavior: Clip.antiAlias,
-      //                         child: Container(
-      //                           width: 280,
-      //                           decoration: BoxDecoration(
-      //                             image: DecorationImage(
-      //                               image: NetworkImage('https://plus.unsplash.com/premium_photo-1754433115781-a0f536b10258?q=80&w=1025&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'),
-      //                               fit: BoxFit.cover,
-      //                             ),
-      //                           ),
-      //                           child: Container(
-      //                             padding: const EdgeInsets.all(24),
-      //                             decoration: BoxDecoration(
-      //                               gradient: LinearGradient(
-      //                                 begin: Alignment.bottomCenter,
-      //                                 end: Alignment.topCenter,
-      //                                 colors: [
-      //                                   Colors.black.withOpacity(0.7),
-      //                                   Colors.transparent,
-      //                                 ],
-      //                               ),
-      //                             ),
-      //                             child: Align(
-      //                               alignment: Alignment.bottomLeft,
-      //                               child: Column(
-      //                                 mainAxisSize: MainAxisSize.min,
-      //                                 crossAxisAlignment: CrossAxisAlignment.start,
-      //                                 children: [
-      //                                   SecondaryBadge(
-      //                                     child: const Text("2.2.4").semiBold.small,
-      //                                   ),
-      //                                   const SizedBox(height: 8),
-      //                                   Text("Update Available").medium.h1,
-      //                                   Text(
-      //                                     "A new update is now available. This update includes new features, bug fixes, and performance improvements.",
-      //                                     maxLines: 3,
-      //                                     overflow: TextOverflow.ellipsis,
-      //                                   ).light.p,
-      //                                 ],
-      //                               ),
-      //                             ),
-      //                           ),
-      //                         ),
-      //                       )
-      //                     ),
-      //                   ],
-      //                 ),
-      //               ],
-      //             ),
-      //           )
-      //         )
-      //       ),
-      //       renderNavigationBarWithShadow(context),
-      //     ]
-      //   )
-      // )
-      child: Scaffold(
-        child: Stack(
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(top: 10, left: 20, right: 20, bottom: 0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // const SizedBox(height: 126),
-                  // const Text(
-                  //   "Available Packages",
-                  //   style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-                  // ),
-                  // const SizedBox(height: 16),
-                  Expanded(
-                    child: _packages.isEmpty
-                      ? const Center(child: Text("Loading packages..."))
-                      : SingleChildScrollView(
-                          child: Container(
-                            width: double.infinity, // Ensures the scroll view fits the app width
-                            padding: EdgeInsets.only(top: 20, bottom: 20),
-                            margin: EdgeInsets.only(top: 80),
-                            child: Wrap(
-                              spacing: 14,
-                              runSpacing: 14,
-                              children: _packages.map((package) {
-                                return renderPackageCard(
-                                  title: package['name'] ?? 'Unknown Package',
-                                  desc: package['description'] ?? 'No description available.',
-                                  author: package['author'] ?? 'Unknown Author',
-                                  version: package['version'] ?? 'N/A',
-                                  license: package['license'] ?? 'Unknown',
-                                  contextMenuItems: [
-                                    MenuButton(
-                                      child: const Text('View Details'),
-                                      onPressed: (context) {
-                                        GoRouter.of(context).go('/packages/${package['name']}');
-                                      },
-                                    ),
-                                    MenuButton(
-                                      child: const Text('Delete'),
-                                      onPressed: (context) async {
-                                        final dbHelper = DBHelper();
-                                        await dbHelper.clearPackages();
-                                        _loadPackages();
-                                      },
-                                    ),
-                                  ],
-                                  width: 255,
-                                  height: 130,
-                                );
-                              }).toList(),
-                            ),
-                          ),
-                        ),
-                  ),
-                ],
-              ),
-            ),
-            renderNavigationBarWithShadow(context),
-          ],
-        ),
-      )
+          ),
+          renderNavigationBarWithShadow(context),
+        ],
+      ),
     );
   }
+
 }

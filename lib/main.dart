@@ -30,7 +30,7 @@ void main() async {
       GoRoute(
         path: '/',
         builder: (context, state) => MyHomePage(
-          title: 'Boogie Homepage',
+          title: "What's new",
           isDark: true,
         ),
       ),

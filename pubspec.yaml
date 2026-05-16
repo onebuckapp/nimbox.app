@@ -48,6 +48,7 @@ dependencies:
   flutter_tabler_icons: ^1.43.0
   carousel_slider: ^5.1.2
   path_provider: ^2.1.5
+  url_launcher: ^6.3.2
   # mac_menu_bar: ^0.0.3
   # tray_manager: ^0.5.2
 

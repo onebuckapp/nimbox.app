@@ -1,3 +1,8 @@
+// Nimbox - The missing GUI for Nimble, Nim's package manager.
+//      Copyright (c) 2026 George Lemon
+//      Released under the GPLv3 License
+//      https://onebuck.app | https://github.com/onebuckapp
+
 import 'dart:io';
 import 'dart:async';
 import 'dart:convert';
@@ -10,7 +15,6 @@ import 'package:flutter_tabler_icons/flutter_tabler_icons.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-// import 'package:markdown_widget/markdown_widget.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 
 import '../isolators/build_docs.dart';
@@ -328,6 +332,12 @@ class _PackagePageState extends ConsumerState<PackagePage> with WidgetsBindingOb
     );
   }
 
+  // return the home directory to nimbox ~/.nimbox
+  String getNimboxHome() {
+    String homeDir = Platform.environment['HOME'] ?? Platform.environment['USERPROFILE'] ?? '.';
+    return '$homeDir/.nimbox';
+  }
+
   @override
   Widget build(BuildContext context) {
     final index = ref.watch(packageTabIndexProvider);
@@ -638,8 +648,8 @@ class _PackagePageState extends ConsumerState<PackagePage> with WidgetsBindingOb
                                                       onPressed: isBuilding
                                                         ? null
                                                         : () async => await buildState.startBuild(
-                                                            command: '/Users/georgelemon/.nimble/bin/nim',
-                                                            arguments: ['jsondoc', '--project', '--index:off', '--out:/Users/georgelemon/.boogie/docs/gccjit', '/Users/georgelemon/.nimble/pkgs2/gccjit-0.1.0-95877722619d5d2e55ea8cc0b9e0109fdfaa7bce/gccjit.nim']
+                                                            command: 'nim',
+                                                            arguments: ['jsondoc', '--project', '--index:off', '--out:${getNimboxHome()}/docs/${widget.title}'],
                                                           ),
                                                     ),
                                                     const Text('Last built on 20th June 2024').xSmall.muted
