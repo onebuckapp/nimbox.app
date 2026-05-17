@@ -10,7 +10,6 @@ import 'package:go_router/go_router.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-// import 'package:tray_manager/tray_manager.dart';
 import './services/notification_service.dart';
 
 import './pages/home.dart';
@@ -171,7 +170,7 @@ class AppRootState extends State<AppRoot> {
                   ),
                   child: SizedBox.expand(
                     child: _webViewUrl != null
-                      ? WebEditor(
+                      ? WebView(
                           initialUrl: _webViewUrl!,
                           onClose: () => _panelController.hide(),
                         )
@@ -196,27 +195,7 @@ void main() async {
 
   WidgetsFlutterBinding.ensureInitialized();
   await NotificationService.init();
-
+  
   runApp(ProviderScope(child: AppRoot()));
 }
 
-  // await trayManager.setIcon(
-  //   Platform.isWindows
-  //     ? 'images/tray_icon.ico'
-  //     : 'images/tray_icon.png',
-  // );
-  // Menu menu = Menu(
-  //   items: [
-  //     MenuItem(
-  //       key: 'show_window',
-  //       label: 'Show Window',
-  //     ),
-  //     MenuItem.separator(),
-  //     MenuItem(
-  //       key: 'exit_app',
-  //       label: 'Exit App',
-  //     ),
-  //   ],
-  // );
-
-  // await trayManager.setContextMenu(menu);

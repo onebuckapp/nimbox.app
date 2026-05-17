@@ -11,16 +11,16 @@ import 'package:flutter/rendering.dart';
 
 import './resizer.dart';
 
-class WebEditor extends StatefulWidget {
+class WebView extends StatefulWidget {
   final String initialUrl;
   final VoidCallback? onClose;
-  const WebEditor({super.key, required this.initialUrl, this.onClose});
+  const WebView({super.key, required this.initialUrl, this.onClose});
 
   @override
-  State<WebEditor> createState() => _WebEditorState();
+  State<WebView> createState() => _WebViewState();
 }
 
-class _WebEditorState extends State<WebEditor> {
+class _WebViewState extends State<WebView> {
   static const MethodChannel _channel = MethodChannel('custom_webview_context_menu');
 
   double _editorWidth = 600; // initial width, adjust as needed
@@ -67,14 +67,11 @@ class _WebEditorState extends State<WebEditor> {
     });
   }
 
-  Future<String> loadHtmlFromAssets() async {
-    return await rootBundle.loadString('assets/codemirror.html');
-  }  
-
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<String>(
-      future: loadHtmlFromAssets(),
+      // future: loadHtmlFromAssets(),
+      future: Future.value(widget.initialUrl), // Use the initial URL directly
       builder: (context, snapshot) {
         return ThrottledResizeWidget(
           onResize: (size) {

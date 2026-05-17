@@ -9,7 +9,9 @@ import UserNotifications
 import WebKit
 
 @main
-class AppDelegate: FlutterAppDelegate, UNUserNotificationCenterDelegate { // Conform to the protocol
+class AppDelegate: FlutterAppDelegate, UNUserNotificationCenterDelegate {
+  var statusItem: NSStatusItem?
+
   override func applicationDidFinishLaunching(_ notification: Notification) {
     UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge]) { granted, error in
       if let error = error {
@@ -18,12 +20,40 @@ class AppDelegate: FlutterAppDelegate, UNUserNotificationCenterDelegate { // Con
     }
     UNUserNotificationCenter.current().delegate = self // Now valid
 
+    // Register the webview plugin
     let controller = mainFlutterWindow?.contentViewController as! FlutterViewController
-    // Register platform view factory
     let registrar = controller.registrar(forPlugin: "MacOSWebViewPlugin")
     let factory = MacOSWebViewFactory(messenger: registrar.messenger)
     registrar.register(factory, withId: "macos_webview")
     RegisterGeneratedPlugins(registry: controller)
+    
+    setupTrayMenu()
+    super.applicationDidFinishLaunching(notification)
+  }
+
+  func setupTrayMenu() {
+    statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.squareLength)
+
+    if let button = statusItem?.button {
+      if #available(macOS 11.0, *) {
+        button.image = NSImage(systemSymbolName: "shippingbox.fill", accessibilityDescription: "Nimbox")
+      } else {
+        button.image = NSImage(named: NSImage.applicationIconName)
+        button.title = "NB"
+      }
+    }
+
+    let menu = NSMenu()
+    menu.addItem(NSMenuItem(title: "Open Nimbox", action: #selector(showWindow), keyEquivalent: "o"))
+    menu.addItem(NSMenuItem.separator())
+    menu.addItem(NSMenuItem(title: "Quit", action: #selector(NSApplication.terminate(_:)), keyEquivalent: "q"))
+
+    statusItem?.menu = menu
+  }
+
+  @objc func showWindow() {
+    NSApp.activate(ignoringOtherApps: true)
+    mainFlutterWindow?.makeKeyAndOrderFront(nil)
   }
 
   override func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool {
