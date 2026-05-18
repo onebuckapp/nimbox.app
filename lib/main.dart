@@ -18,6 +18,7 @@ import './pages/package.dart';
 
 import './pages/widgets/wkwebview.dart';
 import './pages/widgets/panel.dart';
+import './pages/widgets/settings.dart';
 
 class AppRoot extends StatefulWidget {
   @override
@@ -54,8 +55,11 @@ class AppRootState extends State<AppRoot> {
 
   double sidebarWidth = 200;
 
-  final SidebarPanelController _panelController = SidebarPanelController(); // Add controller
+  final SidebarPanelController _panelController = SidebarPanelController();
+  final SidebarPanelController _chatPanelController = SidebarPanelController();
+  final SidebarPanelController _settingsPanelController = SidebarPanelController();
   String? _webViewUrl; // Store the current URL for the webview
+  bool chatboxEnabled = false; // Track whether the chatbox is enabled
 
   void openWebView(String url) {
     print('Opening WebView with URL: $url'); // Debugging
@@ -64,6 +68,48 @@ class AppRootState extends State<AppRoot> {
       _panelController.show(); // Show the panel
     });
   }
+
+  void openChatPanel() {
+    _chatPanelController.show();
+  }
+
+  void openSettingsPanel() {
+    _settingsPanelController.show();
+  }
+
+  final ThemeData _appTheme = ThemeData(
+    colorScheme: ColorScheme(
+      brightness: Brightness.dark,
+      background: Color(0xff0f1116),
+      foreground: Color(0xfffafafa),
+      card: Color(0xff171921),
+      cardForeground: Color(0xfffafafa),
+      popover: Color(0xff171921),
+      popoverForeground: Color(0xfffafafa),
+      primary: Color(0xfff99c19),
+      primaryForeground: Color(0xfff5f3ff),
+      secondary: Color(0xff27272a),
+      secondaryForeground: Color(0xfffafafa),
+      muted: Color(0xff27272a),
+      mutedForeground: Color(0xff9f9fa9),
+      accent: Color(0xff27272a),
+      accentForeground: Color(0xfffafafa),
+      destructive: Color(0xffff6467),
+      destructiveForeground: Color(0x0),
+      border: Color(0x1affffff),
+      input: Color(0x26ffffff),
+      ring: Color(0xff7f22fe),
+      chart1: Color(0xff1447e6),
+      chart2: Color(0xff00bc7d),
+      chart3: Color(0xfffe9a00),
+      chart4: Color(0xffad46ff),
+      chart5: Color(0xffff2056),
+    ),
+    density: Density.reducedDensity,
+    surfaceOpacity: 0.8,
+    surfaceBlur: 8,
+    radius: 0.7,
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -75,110 +121,154 @@ class AppRootState extends State<AppRoot> {
             title: 'Nimbox',
             debugShowCheckedModeBanner: false,
             routerConfig: _router, // Use the _router variable here
-            theme: ThemeData(
-              colorScheme: ColorScheme(
-                brightness: Brightness.dark,
-                background: Color(0xff0f1116),
-                foreground: Color(0xfffafafa),
-                card: Color(0xff171921),
-                cardForeground: Color(0xfffafafa),
-                popover: Color(0xff171921),
-                popoverForeground: Color(0xfffafafa),
-                primary: Color(0xffffffff),
-                primaryForeground: Color(0xfff5f3ff),
-                secondary: Color(0xff27272a),
-                secondaryForeground: Color(0xfffafafa),
-                muted: Color(0xff27272a),
-                mutedForeground: Color(0xff9f9fa9),
-                accent: Color(0xff27272a),
-                accentForeground: Color(0xfffafafa),
-                destructive: Color(0xffff6467),
-                destructiveForeground: Color(0x0),
-                border: Color(0x1affffff),
-                input: Color(0x26ffffff),
-                ring: Color(0xff7f22fe),
-                chart1: Color(0xff1447e6),
-                chart2: Color(0xff00bc7d),
-                chart3: Color(0xfffe9a00),
-                chart4: Color(0xffad46ff),
-                chart5: Color(0xffff2056),
-              ),
-              density: Density.reducedDensity,
-              surfaceOpacity: 0.8,
-              surfaceBlur: 8,
-              radius: 0.7,
-            ),
-          ),
-          Builder(
-            builder: (context) => IgnorePointer(
-              child: OverflowBox(
-                alignment: Alignment.topLeft,
-                minWidth: 0,
-                minHeight: 0,
-                maxWidth: double.infinity,
-                maxHeight: double.infinity,
-                child: Transform.scale(
-                  scale: 0.5,
-                  alignment: Alignment.topLeft,
-                  child: Container(
-                    width: MediaQuery.of(context).size.width / 0.5,
-                    height: MediaQuery.of(context).size.height / 0.5,
-                    decoration: const BoxDecoration(
-                      image: DecorationImage(
-                        image: AssetImage('assets/noise.png'),
-                        repeat: ImageRepeat.repeat,
-                        opacity: 0.40,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ),
-          ControlledSidebarPanel(
-            controller: _panelController,
-            position: PanelPosition.bottom,
-            size: 750,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 32), // Adjust as needed
-              child: Container(
-                decoration: BoxDecoration(
-                  color: const Color(0xFF211b1f),
-                  borderRadius: const BorderRadius.only(
-                    topLeft: Radius.circular(16),
-                    topRight: Radius.circular(16),
-                  ),
-                  border: Border(
-                    top: BorderSide(color: Colors.stone[800], width: 6),
-                    left: BorderSide(color: Colors.stone[800], width: 6),
-                    right: BorderSide(color: Colors.stone[800], width: 6),
-                  ),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.25), // Shadow color
-                      blurRadius: 32, // Spread of the shadow
-                      offset: Offset(0, -8), // Horizontal & vertical offset
-                      spreadRadius: 2, // Optional: how much the shadow spreads
-                    ),
-                  ],
-                ),
-                width: sidebarWidth,
-                child: ClipRRect(
-                  borderRadius: const BorderRadius.only(
-                    topLeft: Radius.circular(16),
-                    topRight: Radius.circular(16),
-                  ),
-                  child: SizedBox.expand(
-                    child: _webViewUrl != null
-                      ? WebView(
-                          initialUrl: _webViewUrl!,
-                          onClose: () => _panelController.hide(),
+            theme: _appTheme,
+            builder: (context, child) {
+              return Stack(
+                children: [
+                  child ?? const SizedBox.shrink(),
+                  Overlay(
+                    initialEntries: [
+                      OverlayEntry(builder: (overlayContext) => Stack(
+                          children: [
+                              Builder(
+                                builder: (context) => IgnorePointer(
+                                  child: OverflowBox(
+                                    alignment: Alignment.topLeft,
+                                    minWidth: 0,
+                                    minHeight: 0,
+                                    maxWidth: double.infinity,
+                                    maxHeight: double.infinity,
+                                    child: Transform.scale(
+                                      scale: 0.5,
+                                      alignment: Alignment.topLeft,
+                                      child: Container(
+                                        width: MediaQuery.of(context).size.width / 0.5,
+                                        height: MediaQuery.of(context).size.height / 0.5,
+                                        decoration: const BoxDecoration(
+                                          image: DecorationImage(
+                                            image: AssetImage('assets/noise.png'),
+                                            repeat: ImageRepeat.repeat,
+                                            opacity: 0.28,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              ControlledSidebarPanel(
+                                controller: _panelController,
+                                position: PanelPosition.bottom,
+                                size: 750,
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(horizontal: 32), // Adjust as needed
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      color: const Color(0xFF211b1f),
+                                      borderRadius: const BorderRadius.only(
+                                        topLeft: Radius.circular(16),
+                                        topRight: Radius.circular(16),
+                                      ),
+                                      border: Border(
+                                        top: BorderSide(color: Colors.stone[800], width: 6),
+                                        left: BorderSide(color: Colors.stone[800], width: 6),
+                                        right: BorderSide(color: Colors.stone[800], width: 6),
+                                      ),
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Colors.black.withOpacity(0.25), // Shadow color
+                                          blurRadius: 32, // Spread of the shadow
+                                          offset: Offset(0, -8), // Horizontal & vertical offset
+                                          spreadRadius: 2, // Optional: how much the shadow spreads
+                                        ),
+                                      ],
+                                    ),
+                                    width: sidebarWidth,
+                                    child: ClipRRect(
+                                      borderRadius: const BorderRadius.only(
+                                        topLeft: Radius.circular(16),
+                                        topRight: Radius.circular(16),
+                                      ),
+                                      child: SizedBox.expand(
+                                        child: _webViewUrl != null
+                                          ? WebView(
+                                              initialUrl: _webViewUrl!,
+                                              onClose: () => _panelController.hide(),
+                                            )
+                                          : const SizedBox.shrink(),
+                                      ),
+                                    ),
+                                  )
+                                ),
+                              ),
+                              ControlledSidebarPanel(
+                                controller: _settingsPanelController,
+                                position: PanelPosition.right,
+                                size: 720,
+                                child: Theme(
+                                  data: _appTheme,
+                                  child: SettingsPage(),
+                                ),
+                              ),
+                              // ControlledSidebarPanel(
+                              //   controller: _chatPanelController,
+                              //   position: PanelPosition.right,
+                              //   size: 650,
+                              //   child: Theme(
+                              //     data: _appTheme,
+                              //     child: Container(
+                              //       color: const Color(0xFF111116),
+                              //       child: chatboxEnabled
+                              //         ? WebView(initialUrl: 'http://127.0.0.1:8000', onClose: () => _chatPanelController.hide())
+                              //         : Stack(
+                              //           children: [
+                              //             ChatSettings(
+                              //               onCancel: () {
+                              //                 // Handle cancel action
+                              //               },
+                              //               onDeploy: () {
+                              //                 // Handle deploy action
+                              //               },
+                              //             ),
+                              //             Builder(
+                              //               builder: (context) => IgnorePointer(
+                              //                 child: OverflowBox(
+                              //                   alignment: Alignment.topLeft,
+                              //                   minWidth: 0,
+                              //                   minHeight: 0,
+                              //                   maxWidth: double.infinity,
+                              //                   maxHeight: double.infinity,
+                              //                   child: Transform.scale(
+                              //                     scale: 0.5,
+                              //                     alignment: Alignment.topLeft,
+                              //                     child: Container(
+                              //                       width: MediaQuery.of(context).size.width / 0.5,
+                              //                       height: MediaQuery.of(context).size.height / 0.5,
+                              //                       decoration: const BoxDecoration(
+                              //                         image: DecorationImage(
+                              //                           image: AssetImage('assets/noise.png'),
+                              //                           repeat: ImageRepeat.repeat,
+                              //                           opacity: 0.28,
+                              //                         ),
+                              //                       ),
+                              //                     ),
+                              //                   ),
+                              //                 ),
+                              //               ),
+                              //             ),
+                              //           ],
+                              //         )
+                              //     ),
+                              //   ),
+                              // ),
+                          ]
                         )
-                      : const SizedBox.shrink(),
+                      )
+                    ]
                   ),
-                ),
-              )
-            ),
+                ]
+              );
+            }
           ),
         ],
       ),

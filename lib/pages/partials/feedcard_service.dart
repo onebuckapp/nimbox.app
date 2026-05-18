@@ -9,7 +9,7 @@ import 'package:shadcn_flutter/shadcn_flutter.dart';
 class FeedCacheService {
   static final Map<String, String> _cachedXml = {};
   static final Map<String, DateTime> _lastFetchTime = {};
-  static const Duration fetchInterval = Duration(minutes: 10);
+  static const Duration fetchInterval = Duration(minutes: 60);
 
   static bool isCacheValid(String url) {
     final lastFetch = _lastFetchTime[url];
@@ -60,7 +60,7 @@ abstract class FeedCardBaseState<T extends FeedCardBase> extends State<T> {
       }
     } catch (e) {
       print('Error fetching feed: $e');
-      setState(() => isLoading = false);
+      // setState(() => isLoading = false);
     }
   }
 

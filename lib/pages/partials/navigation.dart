@@ -3,12 +3,13 @@
 //      Released under the GPLv3 License
 //      https://onebuck.app | https://github.com/onebuckapp
 
+import 'dart:async'; 
 import 'package:flutter/services.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher.dart';
-
 import './spotlight.dart';
+import '../../main.dart';
 import '../../utils/util.dart';
 
 Widget renderNavigationBarWithShadow(BuildContext context) {
@@ -37,9 +38,28 @@ class HoverableChatbox extends StatefulWidget {
 class _HoverableChatboxState extends State<HoverableChatbox> {
   double _topPosition = -5; // Initial position
   double _tiltAngle = 0;     // Radians
+  // Timer? _timer; // periodic checks the health of the Chatbox
+  
+  @override
+  void initState() {
+    super.initState();
+    // Start a periodic timer to check chatboxEnabled every 5 minutes
+    // _timer = Timer.periodic(const Duration(seconds: 5), (timer) {
+    //   setState(() {
+    //     print('Checking chatboxEnabled: ${context.findAncestorStateOfType<AppRootState>()?.chatboxEnabled}'); // Debugging
+    //   }); // trigger a rebuild to reflect the latest state
+    // });
+  }
+
+  @override
+  void dispose() {
+    // _timer?.cancel(); // cancel the timer when the widget is disposed
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
+    final appRootState = context.findAncestorStateOfType<AppRootState>();
     return AnimatedPositioned(
       duration: const Duration(milliseconds: 200),
       curve: Curves.easeInOut,
@@ -63,12 +83,16 @@ class _HoverableChatboxState extends State<HoverableChatbox> {
           width: 55,
           height: 55,
           child: GestureDetector(
-            onTap: () => GoRouter.of(context).go('/'),
+            onTap: () =>  appRootState?.openSettingsPanel(),
             child: AnimatedRotation(
               turns: _tiltAngle / (2 * 3.1415926535), // Convert radians to turns
               duration: const Duration(milliseconds: 50),
               child: Image.asset(
-                'assets/chatbox-2.png',
+                (
+                  appRootState?.chatboxEnabled ?? false
+                  ? 'assets/chatbox-1.png'
+                  : 'assets/chatbox-2.png'
+                ),
                 width: 125,
                 height: 125,
                 fit: BoxFit.contain,
@@ -89,7 +113,7 @@ Widget renderNavigationMenu(BuildContext context) {
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
         SizedBox(
-          width: 650,
+          width: 550,
           child: NavigationMenu(
             children: [
               NavigationMenuItem(
@@ -133,6 +157,18 @@ Widget renderNavigationMenu(BuildContext context) {
               ),
             ),
           ),
+        ),
+        const SizedBox(width: 18),
+        SizedBox(
+          width: 150,
+          child: NavigationMenu(
+            children: [
+              NavigationMenuItem(
+                onPressed: () => GoRouter.of(context).go('/'),
+                child: const Text("Settings"),
+              ),
+            ]
+          )
         )
       ]
     )

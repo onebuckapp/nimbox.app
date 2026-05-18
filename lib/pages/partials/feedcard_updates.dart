@@ -56,11 +56,80 @@ class _FeedCardUpdatesState extends FeedCardBaseState<FeedCardUpdates> with Sing
   }
 
   @override
-  Widget buildPlaceholder() => _innerContainer(
-        version: 'Loading...',
-        description: 'Fetching update details...',
-        isLoading: true,
-      ).asSkeleton();
+  Widget buildPlaceholder() =>
+    Card(
+      padding: const EdgeInsets.all(0),
+      borderRadius: BorderRadius.circular(15),
+      clipBehavior: Clip.antiAlias,
+      child: Container(
+        width: 280,
+        decoration: const BoxDecoration(
+          image: null, // Remove static image decoration
+        ),
+        child: Stack(
+          children: [
+            // Rotating background image
+            Positioned.fill(
+              child: ClipRect(
+                child: OverflowBox(
+                  maxWidth: double.infinity,
+                  maxHeight: double.infinity,
+                  child: RotationTransition(
+                    turns: _rotationController,
+                    child: Transform.scale(
+                      scale: 2.5, // Scale up enough to cover corners during rotation
+                      child: Container(
+                        decoration: const BoxDecoration(
+                          image: DecorationImage(
+                            image: AssetImage('assets/kunal-patil-8ZKlgI_G-mw-unsplash.jpg'),
+                            fit: BoxFit.cover,
+                            // alignment: Alignment(-0.5, -0.5)
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            ShadcnSkeletonizerConfigLayer(
+              theme: ThemeData(
+                colorScheme: ColorSchemes.darkZinc.zinc,
+              ),
+              child: Container(
+                padding: const EdgeInsets.only(left: 24, right: 16, top: 16, bottom: 24),
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.bottomCenter,
+                    end: Alignment.topCenter,
+                    colors: [Colors.black.withOpacity(0.7), Colors.transparent],
+                  ),
+                ),
+                child: Column(
+                  children:[
+                    const Spacer(),
+                    Align(
+                      alignment: Alignment.bottomLeft,
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text("xxxx"),
+                          const SizedBox(height: 8),
+                          Text("Update Available", style: TextStyle(fontSize: 32)).light,
+                          const SizedBox(height: 8),
+                          Text("Lorem ipsum dolor sit amet").small,
+                        ],
+                      ),
+                    ),
+                  ]
+                )
+              ).asSkeletonSliver(),
+            )
+          ]
+        )
+      )
+    );
 
   @override
   Widget buildContent() => _innerContainer(

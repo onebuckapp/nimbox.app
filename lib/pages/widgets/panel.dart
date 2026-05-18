@@ -3,7 +3,8 @@
 //      Released under the GPLv3 License
 //      https://onebuck.app | https://github.com/onebuckapp
 
-import 'package:flutter/material.dart';
+// import 'package:flutter/material.dart';
+import 'package:shadcn_flutter/shadcn_flutter.dart';
 
 enum PanelPosition { top, right, bottom, left, end }
 
@@ -87,8 +88,8 @@ class _ControlledSidebarPanelState extends State<ControlledSidebarPanel> {
   Widget _buildPanel(BuildContext context) {
     final media = MediaQuery.of(context);
     final isHorizontal = widget.position == PanelPosition.top || widget.position == PanelPosition.bottom;
-    final panel = Material(
-      elevation: 16,
+    final panel = Container(
+      // elevation: 16,
       color: Colors.transparent,
       child: SizedBox(
         width: isHorizontal ? media.size.width : widget.size,
@@ -113,7 +114,7 @@ class _ControlledSidebarPanelState extends State<ControlledSidebarPanel> {
           GestureDetector(
             onTap: widget.controller.hide,
             child: Container(
-              color: Colors.white.withOpacity(0.3),
+              color: Colors.black.withOpacity(0.5),
               width: double.infinity,
               height: double.infinity,
             ),

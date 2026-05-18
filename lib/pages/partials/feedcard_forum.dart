@@ -7,7 +7,6 @@ import 'package:xml/xml.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:flutter_tabler_icons/flutter_tabler_icons.dart';
 import './feedcard_service.dart';
-
 import '../../utils/util.dart';
 
 class FeedCardForum extends FeedCardBase {
@@ -39,7 +38,17 @@ class _FeedCardForumState extends FeedCardBaseState<FeedCardForum> {
   }
 
   @override
-  Widget buildPlaceholder() => ListView.builder(
+  Widget buildPlaceholder() => 
+    ShadcnSkeletonizerConfigLayer(
+      theme: ThemeData(
+        colorScheme: ColorSchemes.darkZinc.zinc,
+        radius: 0.6,
+        density: Density.reducedDensity,
+        surfaceOpacity: 0.8,
+        surfaceBlur: 8,
+      ),
+      child:
+        ListView.builder(
         padding: const EdgeInsets.symmetric(vertical: 6),
         itemCount: 5,
         itemBuilder: (_, __) => Container(
@@ -59,7 +68,8 @@ class _FeedCardForumState extends FeedCardBaseState<FeedCardForum> {
             ])),
           ]),
         ),
-      ).asSkeleton();
+      )
+    );
 
   @override
   Widget buildContent() => _entries.isEmpty

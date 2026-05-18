@@ -134,7 +134,39 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
                         height: 300,
                         child: FeedCardForum(),
                       ),
-                      const SizedBox(width: 16)
+                      const SizedBox(width: 16),
+                      Expanded(
+                        child: SizedBox(
+                          height: 300,
+                          child: Card(
+                            borderRadius: BorderRadius.circular(12),
+                            padding: const EdgeInsets.all(0),
+                            child: Container(
+                              width: 620,
+                              constraints: const BoxConstraints(maxHeight: 300),
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.all(12),
+                                    child: Row(children: [
+                                      Icon(TablerIcons.book, size: 20, color: Colors.slate),
+                                      const SizedBox(width: 6),
+                                      const Text('Offline docs', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
+                                    ]),
+                                  ),
+                                  Expanded(child: 
+                                    Align(
+                                      alignment: Alignment.center,
+                                      child: Text('Coming Soon...').small.muted.light,
+                                    )
+                                  ),
+                                ],
+                              ),
+                            ),
+                          )
+                        )
+                      )
                     ],
                   ),
                   const SizedBox(height: 20), // Add spacing between sections
@@ -157,7 +189,7 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
                                     Row(
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
-                                        Text('Your local packages').medium.h3,
+                                        Text('Local packages').medium.h3,
                                         const SizedBox(width: 24),
                                         OutlineButton(
                                           child: const Text('See all packages'),
