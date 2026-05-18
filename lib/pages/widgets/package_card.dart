@@ -27,7 +27,9 @@ import '../../database/db_helper.dart';
 
 import './wkwebview.dart';
 
-class PackageCard extends StatelessWidget {
+// ...existing code...
+
+class PackageCard extends StatefulWidget {
   final String title;
   final String desc;
   final String author;
@@ -54,6 +56,13 @@ class PackageCard extends StatelessWidget {
   }) : super(key: key);
 
   @override
+  _PackageCardState createState() => _PackageCardState();
+}
+
+class _PackageCardState extends State<PackageCard> {
+  bool _isHovered = false;
+
+  @override
   Widget build(BuildContext context) {
     // Define default menu items
     final appRootState = context.findAncestorStateOfType<AppRootState>();
@@ -61,22 +70,15 @@ class PackageCard extends StatelessWidget {
       MenuButton(
         child: const Text('View package'),
         onPressed: (context) {
-          GoRouter.of(context).go('/packages/$title');
+          GoRouter.of(context).go('/packages/${widget.title}');
         },
       ),
       MenuButton(
         child: const Text('Open documentation'),
         onPressed: (context) {
-          GoRouter.of(context).go('/packages/$title/docs');
+          GoRouter.of(context).go('/packages/${widget.title}/docs');
         },
       ),
-      // MenuButton(
-      //   child: const Text('Open repository'),
-      //   onPressed: (context) {
-      //     print('Opening repository for $title');
-      //     openUrl('https://github.com/$author/$title');
-      //   },
-      // ),
       MenuButton(
         child: const Text('Open repository'),
         onPressed: (context) {
@@ -89,7 +91,7 @@ class PackageCard extends StatelessWidget {
         onPressed: (context) async {
           final dbHelper = DBHelper();
           await dbHelper.clearPackages();
-          print('Deleted package: $title');
+          print('Deleted package: ${widget.title}');
         },
       ),
     ];
@@ -97,63 +99,72 @@ class PackageCard extends StatelessWidget {
     // Merge default menu items with provided ones
     final mergedMenuItems = [
       ...defaultMenuItems,
-      if (contextMenuItems != null) ...contextMenuItems!,
+      if (widget.contextMenuItems != null) ...widget.contextMenuItems!,
     ];
 
     return ContextMenu(
-      items: mergedMenuItems, // Use the merged menu items directly
-      child: ButtonStyleOverride(
-        padding: (context, states, value) => const EdgeInsets.all(0),
-        child: TextButton(
-          onPressed: () {
-            GoRouter.of(context).go('/packages/$title');
-          },
-          child: Card(
-            borderRadius: BorderRadius.circular(borderRadius),
-            clipBehavior: Clip.antiAlias,
-            padding: const EdgeInsets.all(5),
-            child: SizedBox(
-              width: width,
-              height: height,
-              child: Container(
-                padding: padding ?? const EdgeInsets.all(10),
-                alignment: Alignment.centerLeft,
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(title).medium.h4,
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
+      items: mergedMenuItems,
+      child: MouseRegion(
+        onEnter: (_) => setState(() => _isHovered = true),
+        onExit: (_) => setState(() => _isHovered = false),
+        child: AnimatedScale(
+          scale: _isHovered ? 1.05 : 1.0,
+          duration: const Duration(milliseconds: 30),
+          curve: Curves.easeInOut,
+          child: ButtonStyleOverride(
+            padding: (context, states, value) => const EdgeInsets.all(0),
+            child: TextButton(
+              onPressed: () {
+                GoRouter.of(context).go('/packages/${widget.title}');
+              },
+              child: Card(
+                borderRadius: BorderRadius.circular(widget.borderRadius),
+                clipBehavior: Clip.antiAlias,
+                padding: const EdgeInsets.all(5),
+                child: SizedBox(
+                  width: widget.width,
+                  height: widget.height,
+                  child: Container(
+                    padding: widget.padding ?? const EdgeInsets.all(10),
+                    alignment: Alignment.centerLeft,
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+                        Text(widget.title).medium.h4,
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Text(
+                              'by ${widget.author}',
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(fontSize: 12, color: Colors.slate),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 8),
                         Text(
-                          'by $author',
-                          maxLines: 1,
+                          widget.desc,
+                          maxLines: 2,
                           overflow: TextOverflow.ellipsis,
-                          style: TextStyle(fontSize: 12, color: Colors.slate),
+                        ).light.small,
+                        const SizedBox(height: 8),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Icon(TablerIcons.tag, size: 16, color: Colors.slate),
+                            const SizedBox(width: 3),
+                            Text(widget.version).light.small,
+                            const SizedBox(width: 10),
+                            Icon(TablerIcons.license, size: 16, color: Colors.slate),
+                            const SizedBox(width: 3),
+                            Text(widget.license).light.small,
+                          ],
                         ),
                       ],
                     ),
-                    const SizedBox(height: 8),
-                    Text(
-                      desc,
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                    ).light.small,
-                    const SizedBox(height: 8),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Icon(TablerIcons.tag, size: 16, color: Colors.slate),
-                        const SizedBox(width: 3),
-                        Text(version).light.small,
-                        const SizedBox(width: 10),
-                        Icon(TablerIcons.license, size: 16, color: Colors.slate),
-                        const SizedBox(width: 3),
-                        Text(license).light.small,
-                      ],
-                    ),
-                  ],
+                  ),
                 ),
               ),
             ),
@@ -162,5 +173,4 @@ class PackageCard extends StatelessWidget {
       ),
     );
   }
-
 }

@@ -122,7 +122,7 @@ class _PackagesPageState extends State<PackagesPage> with WidgetsBindingObserver
       child: Stack(
         children: [
           Padding(
-            padding: const EdgeInsets.only(top: 10, left: 20, right: 20, bottom: 0),
+            padding: const EdgeInsets.only(top: 80, left: 20, right: 20, bottom: 0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -149,7 +149,6 @@ class _PackagesPageState extends State<PackagesPage> with WidgetsBindingObserver
                                     controller: _verticalScrollController,
                                     child: Container(
                                       padding: const EdgeInsets.only(top: 20, bottom: 20),
-                                      margin: const EdgeInsets.only(top: 80),
                                       child: Wrap(
                                         spacing: 14,
                                         runSpacing: 14,
