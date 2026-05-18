@@ -97,7 +97,8 @@ class _HoverableChatboxState extends State<HoverableChatbox> {
           width: 55,
           height: 55,
           child: GestureDetector(
-            onTap: () =>  appRootState?.openSettingsPanel(),
+            // onTap: () =>  appRootState?.openSettingsPanel(),
+            onTap: () =>  appRootState?.openChatPanel(),
             child: AnimatedRotation(
               turns: _tiltAngle / (2 * 3.1415926535), // Convert radians to turns
               duration: const Duration(milliseconds: 50),
