@@ -15,8 +15,10 @@
 - [x] Written in Flutter | Cross-platform, modern, and beautiful UI
 
 ## Why
-I want a GUI client for Nim & Nimble, a simple and intuitive way to manage packages, browse documentation, and get help from AI assistants. Nimbox is my attempt to build that tool, and make it available for free to the Nim community via OneBuckApp.
+I wanted a GUI client for Nim & Nimble, a simple and intuitive way to manage packages, browse documentation, and get help from AI assistants. Nimbox is my attempt to build that tool, and make it available for free to the Nim community via OneBuckApp.
 
+### Preview
+![Preview of Nimbox application](https://github.com/onebuckapp/nimbox.app/blob/main/.github/preview_144604.png)
 
 ### ❤ Contributions & Support
 - 🐛 Found a bug? [Create a new Issue](https://github.com/onebuckapp/nimbox.app/issues)
