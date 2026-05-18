@@ -33,6 +33,7 @@ import './pages/package.dart';
 import './pages/widgets/wkwebview.dart';
 import './pages/widgets/panel.dart';
 import './pages/widgets/settings.dart';
+import './pages/widgets/chatbox.dart';
 
 class AppRoot extends StatefulWidget {
   @override
@@ -224,57 +225,58 @@ class AppRootState extends State<AppRoot> {
                                   child: SettingsPage(),
                                 ),
                               ),
-                              // ControlledSidebarPanel(
-                              //   controller: _chatPanelController,
-                              //   position: PanelPosition.right,
-                              //   size: 650,
-                              //   child: Theme(
-                              //     data: _appTheme,
-                              //     child: Container(
-                              //       color: const Color(0xFF111116),
-                              //       child: chatboxEnabled
-                              //         ? WebView(initialUrl: 'http://127.0.0.1:8000', onClose: () => _chatPanelController.hide())
-                              //         : Stack(
-                              //           children: [
-                              //             ChatSettings(
-                              //               onCancel: () {
-                              //                 // Handle cancel action
-                              //               },
-                              //               onDeploy: () {
-                              //                 // Handle deploy action
-                              //               },
-                              //             ),
-                              //             Builder(
-                              //               builder: (context) => IgnorePointer(
-                              //                 child: OverflowBox(
-                              //                   alignment: Alignment.topLeft,
-                              //                   minWidth: 0,
-                              //                   minHeight: 0,
-                              //                   maxWidth: double.infinity,
-                              //                   maxHeight: double.infinity,
-                              //                   child: Transform.scale(
-                              //                     scale: 0.5,
-                              //                     alignment: Alignment.topLeft,
-                              //                     child: Container(
-                              //                       width: MediaQuery.of(context).size.width / 0.5,
-                              //                       height: MediaQuery.of(context).size.height / 0.5,
-                              //                       decoration: const BoxDecoration(
-                              //                         image: DecorationImage(
-                              //                           image: AssetImage('assets/noise.png'),
-                              //                           repeat: ImageRepeat.repeat,
-                              //                           opacity: 0.28,
-                              //                         ),
-                              //                       ),
-                              //                     ),
-                              //                   ),
-                              //                 ),
-                              //               ),
-                              //             ),
-                              //           ],
-                              //         )
-                              //     ),
-                              //   ),
-                              // ),
+                              ControlledSidebarPanel(
+                                controller: _chatPanelController,
+                                position: PanelPosition.right,
+                                size: 720,
+                                child: Theme(
+                                  data: _appTheme,
+                                  child: Container(
+                                    color: const Color(0xFF111116),
+                                    child: chatboxEnabled
+                                      ? WebView(initialUrl: 'http://127.0.0.1:8000', onClose: () => _chatPanelController.hide())
+                                      : Stack(
+                                        children: [
+                                          // ChatSettings(
+                                          //   onCancel: () {
+                                          //     // Handle cancel action
+                                          //   },
+                                          //   onDeploy: () {
+                                          //     // Handle deploy action
+                                          //   },
+                                          // ),
+                                          ChatboxWidget(),
+                                          Builder(
+                                            builder: (context) => IgnorePointer(
+                                              child: OverflowBox(
+                                                alignment: Alignment.topLeft,
+                                                minWidth: 0,
+                                                minHeight: 0,
+                                                maxWidth: double.infinity,
+                                                maxHeight: double.infinity,
+                                                child: Transform.scale(
+                                                  scale: 0.5,
+                                                  alignment: Alignment.topLeft,
+                                                  child: Container(
+                                                    width: MediaQuery.of(context).size.width / 0.5,
+                                                    height: MediaQuery.of(context).size.height / 0.5,
+                                                    decoration: const BoxDecoration(
+                                                      image: DecorationImage(
+                                                        image: AssetImage('assets/noise.png'),
+                                                        repeat: ImageRepeat.repeat,
+                                                        opacity: 0.28,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      )
+                                  ),
+                                ),
+                              ),
                           ]
                         )
                       )
