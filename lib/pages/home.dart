@@ -146,7 +146,12 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
                       const SizedBox(width: 16),
                       SizedBox(
                         height: 300,
+                        width: 600,
                         child: FeedCardForum(),
+                        // child: Align(
+                        //   alignment: Alignment.center,
+                        //   child: Text('Coming Soon...').small.muted.light,
+                        // )
                       ),
                       const SizedBox(width: 16),
                       Expanded(
