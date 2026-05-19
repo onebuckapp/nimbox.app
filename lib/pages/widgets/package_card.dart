@@ -27,8 +27,6 @@ import '../../database/db_helper.dart';
 
 import './wkwebview.dart';
 
-// ...existing code...
-
 class PackageCard extends StatefulWidget {
   final String title;
   final String desc;
