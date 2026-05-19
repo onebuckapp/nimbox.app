@@ -68,29 +68,102 @@ class _PackageCardState extends State<PackageCard> {
     final appRootState = context.findAncestorStateOfType<AppRootState>();
     final defaultMenuItems = [
       MenuButton(
-        child: const Text('View package'),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Text('View package'),
+                const SizedBox(width: 4),
+                Icon(TablerIcons.box, size: 14, color: Colors.slate),
+              ]
+            ),
+            Text('Open package details page',
+              style: TextStyle(fontSize: 12, color: Colors.slate)).light,
+          ],
+        ),
         onPressed: (context) {
           GoRouter.of(context).go('/packages/${widget.title}');
         },
       ),
       MenuButton(
-        child: const Text('Open documentation'),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Text('View documentation'),
+                const SizedBox(width: 4),
+                Icon(TablerIcons.book, size: 14, color: Colors.slate),
+              ]
+            ),
+            Text('Open local documentation',
+              style: TextStyle(fontSize: 12, color: Colors.slate)).light,
+          ],
+        ),
         onPressed: (context) {
           GoRouter.of(context).go('/packages/${widget.title}/docs');
         },
       ),
       MenuButton(
-        child: const Text('Open repository'),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Text('Open in Chatbox'),
+                const SizedBox(width: 4),
+                Icon(TablerIcons.external_link, size: 14, color: Colors.slate),
+              ]
+            ),
+            Text('Start a conversation about this',
+              style: TextStyle(fontSize: 12, color: Colors.slate)).light,
+          ],
+        ),
         onPressed: (context) {
           final repoUrl = 'https://google.com';
           appRootState?.openWebView(repoUrl); // Open the webview panel
         },
       ),
       MenuButton(
-        child: const Text('Delete'),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Text('Open repository'),
+                const SizedBox(width: 4),
+                Icon(TablerIcons.external_link, size: 14, color: Colors.slate),
+              ]
+            ),
+            Text('Open package repository in browser',
+              style: TextStyle(fontSize: 12, color: Colors.slate)).light,
+          ],
+        ),
+        onPressed: (context) {
+          final repoUrl = 'https://google.com';
+          appRootState?.openWebView(repoUrl); // Open the webview panel
+        },
+      ),
+      MenuButton(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text('Uninstall package'),
+            Text('Try execute nimble uninstall <pkg>', style: TextStyle(fontSize: 12, color: Colors.slate)).light,
+          ],
+        ),
         onPressed: (context) async {
           final dbHelper = DBHelper();
-          await dbHelper.clearPackages();
           print('Deleted package: ${widget.title}');
         },
       ),
