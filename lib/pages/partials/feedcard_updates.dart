@@ -38,20 +38,13 @@ class _FeedCardUpdatesState extends FeedCardBaseState<FeedCardUpdates> with Sing
   String? _description;
   String? _releaseLink;
 
-  late final AnimationController _rotationController;
-
   @override
   void initState() {
     super.initState();
-    // _rotationController = AnimationController(
-    //   vsync: this, // Now works because of SingleTickerProviderStateMixin
-    //   duration: const Duration(seconds: 30), // Adjust duration for rotation speed
-    // )..repeat(); // Infinite rotation
   }
 
   @override
   void dispose() {
-    _rotationController.dispose();
     super.dispose();
   }
 
@@ -82,23 +75,12 @@ class _FeedCardUpdatesState extends FeedCardBaseState<FeedCardUpdates> with Sing
         ),
         child: Stack(
           children: [
-            // Rotating background image
             Positioned.fill(
-              child: ClipRect(
-                child: OverflowBox(
-                  maxWidth: double.infinity,
-                  maxHeight: double.infinity,
-                  child: Transform.scale(
-                    scale: 2.5, // Scale up enough to cover corners during rotation
-                    child: Container(
-                      decoration: const BoxDecoration(
-                        image: DecorationImage(
-                          image: AssetImage('assets/kunal-patil-8ZKlgI_G-mw-unsplash.jpg'),
-                          fit: BoxFit.cover,
-                          // alignment: Alignment(-0.5, -0.5)
-                        ),
-                      ),
-                    ),
+              child: Container(
+                decoration: const BoxDecoration(
+                  image: DecorationImage(
+                    image: AssetImage('assets/kunal-patil-8ZKlgI_G-mw-unsplash.jpg'),
+                    fit: BoxFit.cover,
                   ),
                 ),
               ),
@@ -168,28 +150,16 @@ class _FeedCardUpdatesState extends FeedCardBaseState<FeedCardUpdates> with Sing
             ),
             child: Stack(
               children: [
-                // Rotating background image
                 Positioned.fill(
-                  child: ClipRect(
-                    child: OverflowBox(
-                      maxWidth: double.infinity,
-                      maxHeight: double.infinity,
-                      child: Transform.scale(
-                        scale: 2.5, // Scale up enough to cover corners during rotation
-                        child: Container(
-                          decoration: const BoxDecoration(
-                            image: DecorationImage(
-                              image: AssetImage('assets/kunal-patil-8ZKlgI_G-mw-unsplash.jpg'),
-                              fit: BoxFit.cover,
-                              // alignment: Alignment(-0.5, -0.5)
-                            ),
-                          ),
-                        ),
+                  child: Container(
+                    decoration: const BoxDecoration(
+                      image: DecorationImage(
+                        image: AssetImage('assets/kunal-patil-8ZKlgI_G-mw-unsplash.jpg'),
+                        fit: BoxFit.cover,
                       ),
                     ),
                   ),
                 ),
-                // Static content on top of the rotating background
                 Container(
                   padding: const EdgeInsets.only(left: 24, right: 16, top: 16, bottom: 24),
                   decoration: BoxDecoration(
