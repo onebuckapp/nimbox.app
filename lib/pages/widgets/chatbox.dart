@@ -24,15 +24,22 @@ import 'package:flutter_tabler_icons/flutter_tabler_icons.dart';
 import './chatview.dart';
 import './chat/input_widget.dart';
 
-class ChatboxWidget extends StatelessWidget {
+class ChatboxWidget extends StatefulWidget {
   const ChatboxWidget({Key? key}) : super(key: key);
+
+  @override
+  State<ChatboxWidget> createState() => _ChatboxWidgetState();
+}
+
+class _ChatboxWidgetState extends State<ChatboxWidget> {
+  final ChatViewController _chatController = ChatViewController();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.end,
-        mainAxisAlignment: MainAxisAlignment.end, // Align content at the top
+        mainAxisAlignment: MainAxisAlignment.end,
         children: [
           // Sidebar
           Expanded(
@@ -65,22 +72,21 @@ class ChatboxWidget extends StatelessWidget {
           Expanded(
             flex: 3,
             child: Column(
+              mainAxisAlignment: MainAxisAlignment.end,
+              crossAxisAlignment: CrossAxisAlignment.end,
               children: [
-                // Chat messages — ChatView handles its own scrolling internally
                 Expanded(
                   child: Padding(
                     padding: const EdgeInsets.all(16),
-                    child: ChatView(),
+                    child: ChatView(controller: _chatController),
                   ),
                 ),
-                // TextArea pinned at the bottom
                 Padding(
-                  padding: EdgeInsets.all(16),
+                  padding: const EdgeInsets.all(16),
                   child: ChatInputWidget(
-                    onSend: (text, packages) {
-                      print('Send message: $text with packages: $packages');
-                    }
-                  )
+                    onSend: (text, packages) =>
+                        _chatController.sendMessage(text, packages),
+                  ),
                 ),
               ],
             ),
