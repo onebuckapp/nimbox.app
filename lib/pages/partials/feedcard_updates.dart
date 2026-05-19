@@ -43,10 +43,10 @@ class _FeedCardUpdatesState extends FeedCardBaseState<FeedCardUpdates> with Sing
   @override
   void initState() {
     super.initState();
-    _rotationController = AnimationController(
-      vsync: this, // Now works because of SingleTickerProviderStateMixin
-      duration: const Duration(seconds: 30), // Adjust duration for rotation speed
-    )..repeat(); // Infinite rotation
+    // _rotationController = AnimationController(
+    //   vsync: this, // Now works because of SingleTickerProviderStateMixin
+    //   duration: const Duration(seconds: 30), // Adjust duration for rotation speed
+    // )..repeat(); // Infinite rotation
   }
 
   @override
@@ -88,17 +88,14 @@ class _FeedCardUpdatesState extends FeedCardBaseState<FeedCardUpdates> with Sing
                 child: OverflowBox(
                   maxWidth: double.infinity,
                   maxHeight: double.infinity,
-                  child: RotationTransition(
-                    turns: _rotationController,
-                    child: Transform.scale(
-                      scale: 2.5, // Scale up enough to cover corners during rotation
-                      child: Container(
-                        decoration: const BoxDecoration(
-                          image: DecorationImage(
-                            image: AssetImage('assets/kunal-patil-8ZKlgI_G-mw-unsplash.jpg'),
-                            fit: BoxFit.cover,
-                            // alignment: Alignment(-0.5, -0.5)
-                          ),
+                  child: Transform.scale(
+                    scale: 2.5, // Scale up enough to cover corners during rotation
+                    child: Container(
+                      decoration: const BoxDecoration(
+                        image: DecorationImage(
+                          image: AssetImage('assets/kunal-patil-8ZKlgI_G-mw-unsplash.jpg'),
+                          fit: BoxFit.cover,
+                          // alignment: Alignment(-0.5, -0.5)
                         ),
                       ),
                     ),
@@ -177,17 +174,14 @@ class _FeedCardUpdatesState extends FeedCardBaseState<FeedCardUpdates> with Sing
                     child: OverflowBox(
                       maxWidth: double.infinity,
                       maxHeight: double.infinity,
-                      child: RotationTransition(
-                        turns: _rotationController,
-                        child: Transform.scale(
-                          scale: 2.5, // Scale up enough to cover corners during rotation
-                          child: Container(
-                            decoration: const BoxDecoration(
-                              image: DecorationImage(
-                                image: AssetImage('assets/kunal-patil-8ZKlgI_G-mw-unsplash.jpg'),
-                                fit: BoxFit.cover,
-                                // alignment: Alignment(-0.5, -0.5)
-                              ),
+                      child: Transform.scale(
+                        scale: 2.5, // Scale up enough to cover corners during rotation
+                        child: Container(
+                          decoration: const BoxDecoration(
+                            image: DecorationImage(
+                              image: AssetImage('assets/kunal-patil-8ZKlgI_G-mw-unsplash.jpg'),
+                              fit: BoxFit.cover,
+                              // alignment: Alignment(-0.5, -0.5)
                             ),
                           ),
                         ),
