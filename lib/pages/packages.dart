@@ -129,50 +129,34 @@ class _PackagesPageState extends State<PackagesPage> with WidgetsBindingObserver
                 Expanded(
                   child: _packages.isEmpty
                     ? const Center(child: Text("Loading packages..."))
-                    : LayoutBuilder(
-                        builder: (context, constraints) {
-                          final contentWidth = constraints.maxWidth < _minContentWidth
-                              ? _minContentWidth
-                              : constraints.maxWidth;
-                          return Scrollbar(
-                            controller: _horizontalScrollController,
-                            thumbVisibility: constraints.maxWidth < _minContentWidth,
-                            child: SingleChildScrollView(
-                              controller: _horizontalScrollController,
-                              scrollDirection: Axis.horizontal,
-                              child: SizedBox(
-                                width: contentWidth,
-                                child: Scrollbar(
-                                  controller: _verticalScrollController,
-                                  thumbVisibility: true,
-                                  child: SingleChildScrollView(
-                                    controller: _verticalScrollController,
-                                    child: Container(
-                                      padding: const EdgeInsets.only(top: 20, bottom: 20),
-                                      child: Wrap(
-                                        spacing: 14,
-                                        runSpacing: 14,
-                                        children: _packages.map((package) {
-                                          return PackageCard(
-                                            title: package['name'],
-                                            desc: package['description'],
-                                            author: package['author'],
-                                            version: package['version'],
-                                            license: package['license'],
-                                            width: 255,
-                                            height: 130,
-                                          );
-                                        }).toList(),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          );
-                        },
+                    : Scrollbar(
+                        controller: _verticalScrollController,
+                        thumbVisibility: true,
+                        child: GridView.builder(
+                          controller: _verticalScrollController,
+                          padding: const EdgeInsets.only(top: 20, bottom: 20, left: 20, right: 20),
+                          gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+                            maxCrossAxisExtent: 290,
+                            crossAxisSpacing: 14,
+                            mainAxisSpacing: 14,
+                            mainAxisExtent: 140
+                          ),
+                          itemCount: _packages.length,
+                          itemBuilder: (context, index) {
+                            final package = _packages[index];
+                            return PackageCard(
+                              title: package['name'],
+                              desc: package['description'],
+                              author: package['author'],
+                              version: package['version'],
+                              license: package['license'],
+                              width: 290,
+                              height: 140
+                            );
+                          },
+                        ),
                       ),
-                ),
+                )
               ],
             ),
           ),
