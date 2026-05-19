@@ -57,12 +57,7 @@ class _ChatboxWidgetState extends State<ChatboxWidget> {
                   children: [
                     NavigationGroup(
                       label: const Text('Conversations').small.muted.light,
-                      children: [
-                        newNavItem(1, 'LLM Providers'),
-                        newNavItem(2, "About Nim's memory management"),
-                        newNavItem(3, 'LLM Providers'),
-                        newNavItem(4, 'LLM Providers'),
-                      ],
+                      children: [],
                     ),
                   ],
                 ),
@@ -83,10 +78,7 @@ class _ChatboxWidgetState extends State<ChatboxWidget> {
                 ),
                 Padding(
                   padding: const EdgeInsets.all(16),
-                  child: ChatInputWidget(
-                    onSend: (text, packages) =>
-                        _chatController.sendMessage(text, packages),
-                  ),
+                  child: ChatInputWidget(onSend: (text, packages) => _chatController.sendMessage(text, packages)),
                 ),
               ],
             ),
