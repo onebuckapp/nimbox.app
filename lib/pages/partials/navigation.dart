@@ -17,12 +17,16 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import 'dart:async'; 
+import 'dart:io';
+import 'dart:convert';
 import 'package:flutter/services.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher.dart';
+
 import './spotlight.dart';
+import './choosenim_selectbox.dart';
+
 import '../../main.dart';
 import '../../utils/util.dart';
 
@@ -120,6 +124,7 @@ class _HoverableChatboxState extends State<HoverableChatbox> {
   }
 }
 
+
 Widget renderNavigationMenu(BuildContext context) {
   return SizedBox(
     width: MediaQuery.of(context).size.width - 50,
@@ -128,7 +133,7 @@ Widget renderNavigationMenu(BuildContext context) {
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
         SizedBox(
-          width: 550,
+          width: 620,
           child: NavigationMenu(
             children: [
               NavigationMenuItem(
@@ -157,6 +162,10 @@ Widget renderNavigationMenu(BuildContext context) {
                   ],
                 )
               ),
+              NavigationMenuItem(
+                onPressed: () => GoRouter.of(context).go('/'),
+                child: const Text("Settings"),
+              ),
             ],
           ),
         ),
@@ -174,17 +183,7 @@ Widget renderNavigationMenu(BuildContext context) {
           ),
         ),
         const SizedBox(width: 18),
-        SizedBox(
-          width: 150,
-          child: NavigationMenu(
-            children: [
-              NavigationMenuItem(
-                onPressed: () => GoRouter.of(context).go('/'),
-                child: const Text("Settings"),
-              ),
-            ]
-          )
-        )
+        ChoosenimSelect(),
       ]
     )
   );
